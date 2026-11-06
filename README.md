@@ -9,9 +9,90 @@
 ```c
 #include <stdio.h>   /* printf, scanf, fgets, puts */
 #include <string.h>  /* hàm xử lý chuỗi và vùng nhớ */
+#include <ctype.h>   /* kiểm tra và chuyển đổi ký tự */
 #include <stdlib.h>  /* malloc, calloc, realloc, free */
 #include <stddef.h>  /* size_t, NULL */
 ```
+
+## 0.1. Các hàm `ctype.h` — kiểm tra và chuyển đổi ký tự
+
+Thêm header:
+
+```c
+#include <ctype.h>
+```
+
+### Nhóm hàm kiểm tra ký tự
+
+| Hàm | Trả về khác 0 khi | Ví dụ nhận diện |
+|---|---|---|
+| `isalpha(c)` | `c` là chữ cái | `A`, `z` |
+| `isdigit(c)` | `c` là chữ số thập phân | `0` đến `9` |
+| `isalnum(c)` | `c` là chữ cái hoặc chữ số | `A`, `7` |
+| `islower(c)` | `c` là chữ thường | `a` đến `z` |
+| `isupper(c)` | `c` là chữ hoa | `A` đến `Z` |
+| `isspace(c)` | `c` là ký tự trắng | dấu cách, `\n`, `\t`, `\r` |
+| `ispunct(c)` | `c` là dấu câu | `!`, `,`, `.` |
+| `isxdigit(c)` | `c` là chữ số hệ 16 | `0`-`9`, `a`-`f`, `A`-`F` |
+| `iscntrl(c)` | `c` là ký tự điều khiển | `\n`, `\t` |
+| `isprint(c)` | `c` là ký tự in được, kể cả dấu cách | `A`, ` ` |
+| `isgraph(c)` | `c` là ký tự in được, không tính dấu cách | `A`, `!` |
+
+### Nhóm hàm chuyển đổi
+
+| Hàm | Công dụng | Ví dụ |
+|---|---|---|
+| `toupper(c)` | Chuyển chữ thường thành chữ hoa | `toupper('a')` trả về `'A'` |
+| `tolower(c)` | Chuyển chữ hoa thành chữ thường | `tolower('A')` trả về `'a'` |
+
+Các hàm kiểm tra trả về **0 nếu sai**, khác 0 nếu đúng. `toupper` và `tolower` trả về ký tự sau chuyển đổi; nếu không chuyển được thì giữ nguyên ký tự.
+
+### Ví dụ: đếm chữ cái, chữ số, khoảng trắng và đổi chữ thường thành chữ hoa
+
+```c
+#include <stdio.h>
+#include <ctype.h>
+
+int main()
+{
+    char s[100];
+    int i;
+    int chu_cai;
+    int chu_so;
+    int khoang_trang;
+
+    chu_cai = 0;
+    chu_so = 0;
+    khoang_trang = 0;
+
+    printf("Nhap chuoi: ");
+    if (fgets(s, sizeof(s), stdin) != NULL)
+    {
+        for (i = 0; s[i] != '\0'; i++)
+        {
+            if (isalpha((unsigned char)s[i]))
+                chu_cai++;
+            if (isdigit((unsigned char)s[i]))
+                chu_so++;
+            if (isspace((unsigned char)s[i]))
+                khoang_trang++;
+
+            s[i] = (char)toupper((unsigned char)s[i]);
+        }
+
+        printf("Chuoi in hoa: %s", s);
+        printf("\nSo chu cai: %d", chu_cai);
+        printf("\nSo chu so: %d", chu_so);
+        printf("\nSo ky tu trang: %d\n", khoang_trang);
+    }
+
+    return 0;
+}
+```
+
+**Lưu ý quan trọng:** đối số truyền vào các hàm `ctype.h` phải là `EOF` hoặc giá trị biểu diễn được bởi `unsigned char`. Vì `char` có thể mang giá trị âm, nên cách viết an toàn là `isalpha((unsigned char)c)`, `toupper((unsigned char)c)`, v.v. Các hàm này xử lý ký tự theo locale; không dùng trực tiếp để xử lý chữ tiếng Việt UTF-8 nhiều byte như thể mỗi byte là một ký tự.
+
+`isblank(c)` là hàm được bổ sung từ C99, vì vậy bỏ qua hàm này khi cần tương thích nghiêm ngặt với C90 hoặc trình biên dịch rất cũ.
 
 ---
 
@@ -54,7 +135,7 @@ const char *s2 = "Hello";  /* Không sửa nội dung qua s2 */
 #include <stdio.h>
 #include <string.h>
 
-int main(void)
+int main()
 {
     char a[30] = "Xin";
     char b[] = " chao";
@@ -90,7 +171,7 @@ int main(void)
 #include <stdio.h>
 #include <string.h>
 
-int main(void)
+int main()
 {
     char s[100];
 
@@ -166,7 +247,7 @@ int so_sanh(const char *a, const char *b)
 ```c
 #include <stdio.h>
 
-int main(void)
+int main()
 {
     int x;
     int *p;
@@ -190,7 +271,7 @@ int main(void)
 ```c
 #include <stdio.h>
 
-int main(void)
+int main()
 {
     int a[3] = {10, 20, 30};
     int *p;
@@ -222,7 +303,7 @@ void tang(int *x)
     (*x)++;
 }
 
-int main(void)
+int main()
 {
     int n;
 
@@ -241,7 +322,7 @@ int main(void)
 ```c
 #include <stdio.h>
 
-int main(void)
+int main()
 {
     int x;
     int *p;
@@ -263,7 +344,7 @@ int main(void)
 #include <stdio.h>
 #include <stdlib.h>
 
-int main(void)
+int main()
 {
     int rows;
     int cols;
@@ -321,7 +402,7 @@ int main(void)
 #include <stdio.h>
 #include <stdlib.h>
 
-int main(void)
+int main()
 {
     int n;
     int new_n;
@@ -527,6 +608,11 @@ if (s[0] != '\0')
 | So sánh chuỗi | `strcmp(a, b)` |
 | Tìm ký tự | `strchr(s, c)` |
 | Tìm chuỗi con | `strstr(s, sub)` |
+| Kiểm tra ký tự là chữ cái | `isalpha(c)` |
+| Kiểm tra ký tự là chữ số | `isdigit(c)` |
+| Kiểm tra ký tự trắng | `isspace(c)` |
+| Đổi chữ thường thành hoa | `toupper(c)` |
+| Đổi chữ hoa thành thường | `tolower(c)` |
 | Nhập cả dòng | `fgets(s, sizeof(s), stdin)` |
 | Lấy địa chỉ biến | `&x` |
 | Lấy giá trị qua con trỏ | `*p` |
@@ -553,6 +639,7 @@ if (s[0] != '\0')
 ## 6. LƯU Ý RIÊNG KHI DÙNG DEV-C++
 
 - Lưu mã nguồn C với đuôi `.c`, ví dụ `main.c`.
+- Các ví dụ dùng thống nhất dạng `int main()` theo yêu cầu.
 - Dùng `int i;` ở đầu hàm hoặc đầu khối lệnh, sau đó mới viết `for (i = 0; i < n; i++)`.
 - Tránh viết `for (int i = 0; ...)` khi muốn tương thích với trình biên dịch C đời cũ.
 - Khai báo các biến ở đầu khối `{ ... }`, trước những câu lệnh thực thi.
