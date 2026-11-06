@@ -7,7 +7,7 @@
 ## 0. Header thường dùng
 
 ```c
-#include <stdio.h>   /* printf, scanf, fgets, puts */
+#include <stdio.h>   /* printf, scanf, gets, puts */
 #include <string.h>  /* hàm xử lý chuỗi và vùng nhớ */
 #include <ctype.h>   /* kiểm tra và chuyển đổi ký tự */
 #include <stdlib.h>  /* malloc, calloc, realloc, free */
@@ -66,7 +66,7 @@ int main()
     khoang_trang = 0;
 
     printf("Nhap chuoi: ");
-    if (fgets(s, sizeof(s), stdin) != NULL)
+    if (gets(s) != NULL)
     {
         for (i = 0; s[i] != '\0'; i++)
         {
@@ -176,9 +176,8 @@ int main()
     char s[100];
 
     printf("Nhap chuoi: ");
-    if (fgets(s, sizeof(s), stdin) != NULL)
+    if (gets(s) != NULL)
     {
-        s[strcspn(s, "\n")] = '\0';  /* Xoa ky tu xuong dong neu co */
         printf("Chuoi vua nhap: %s\n", s);
     }
 
@@ -188,7 +187,7 @@ int main()
 
 - `scanf("%s", s)` chỉ đọc đến khoảng trắng.
 - Nếu dùng `scanf`, giới hạn độ rộng, ví dụ `scanf("%99s", s)` với `char s[100]`.
-- Không dùng `gets()` vì hàm này không giới hạn số ký tự nhập và đã bị loại khỏi chuẩn C.
+- `gets(s)` đọc cả dòng, kể cả dấu cách, và tự bỏ ký tự xuống dòng. Tuy nhiên, `gets()` không giới hạn số ký tự nên có thể gây tràn bộ đệm; hàm này đã bị loại khỏi chuẩn C11. Chỉ dùng theo yêu cầu học tập trên Dev-C++ cũ, không dùng trong chương trình thực tế. Khi viết chương trình an toàn, ưu tiên `fgets(s, sizeof(s), stdin)`.
 
 ## 1.5. Tự viết một số hàm chuỗi cơ bản
 
@@ -613,7 +612,7 @@ if (s[0] != '\0')
 | Kiểm tra ký tự trắng | `isspace(c)` |
 | Đổi chữ thường thành hoa | `toupper(c)` |
 | Đổi chữ hoa thành thường | `tolower(c)` |
-| Nhập cả dòng | `fgets(s, sizeof(s), stdin)` |
+| Nhập cả dòng (theo yêu cầu Dev-C++ cũ) | `gets(s)` — không an toàn; ưu tiên `fgets` trong dự án thực tế |
 | Lấy địa chỉ biến | `&x` |
 | Lấy giá trị qua con trỏ | `*p` |
 | Con trỏ cấp 2 | `T **pp` |
